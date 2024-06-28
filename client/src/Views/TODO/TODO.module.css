@@ -1,140 +1,30 @@
-.checkbox {
-  transform: scale(1.5); /* Adjust the scale factor as needed */
-  /* Add any other styling properties */
-}
+/* TODO.module.css */
 
+/* General Container Styles */
 .ancestorContainer {
   display: flex;
-  background-color: whitesmoke;
-  padding: 8px;
-  border-radius: 8px;
-  height: 80vh;
-  margin: 6px;
   flex-direction: column;
-}
-
-.headerContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  height: fit-content;
-  padding: 4px;
-}
-
-.addButton {
-  height: fit-content;
-  width: fit-content;
-  padding: 12px 8px;
-  background-color: floralwhite;
-  cursor: pointer;
-  border-radius: 8px;
-  font-size: large;
-  font-weight: 700;
-  transition: all 0.3s linear;
-  box-shadow: 1px 1px 4px 2px rgb(0, 0, 0, 0.1);
-
-  &:hover {
-    box-shadow: 1px 1px 4px 2px rgb(0, 0, 0, 0.4);
-  }
-}
-
-.todoContainer {
-  display: flex;
-  flex-direction: column;
-  height: 80%;
-  background-color: rgb(0, 0, 0);
-  margin: 4px;
-  border-radius: 8px;
-  padding: 8px;
-  gap: 12px;
-  border-radius: 8px;
-  overflow-y: auto;
-}
-
-.todo {
-  background-color: white;
-
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  box-shadow: 1px 1px 4px 2px rgb(0, 0, 0, 0.1);
-  justify-content: space-between;
-  max-height: 2em;
-
-  input {
-    margin-right: 8px;
-    height: 20px;
-    width: 20px;
-  }
-}
-
-.infoContainer {
-  width: 90%;
-  font-size: x-large;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-.todoInput {
-  width: 500px;
-  margin-right: 8px;
-  height: 45px;
-  font-size: large;
-}
-
-.noTodoMessage {
-  color: white;
-  align-self: center;
-  justify-self: center;
-  font-size: large;
-}
-
-.editContainer {
-  display: flex; /* Ensure flexbox layout */
-  align-items: center; /* Center items vertically */
-}
-
-.editInput {
-  flex: 1; /* Take up remaining space */
-  padding: 8px; /* Adjust padding as needed */
-  margin-right: 8px; /* Add spacing between input and button */
-  height: 100%; /* Ensure input takes up full height of its container */
-  font-size: inherit;
-}
-
-/* Adjust button styles if necessary */
-.editContainer button {
-  padding: 8px 16px;
-}
-.ancestorContainer {
-  display: flex;
   background-color: whitesmoke;
   padding: 16px;
   border-radius: 8px;
   height: 80vh;
   margin: 6px;
-  flex-direction: column;
 }
 
+/* Header Styles */
 .headerContainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  height: fit-content;
   padding: 12px;
 }
 
 .addButton {
-  height: fit-content;
-  width: fit-content;
-  padding: 12px 16px;
+  padding: 10px 14px; /* Reduced padding */
   background-color: floralwhite;
   cursor: pointer;
   border-radius: 8px;
-  font-size: large;
+  font-size: medium; /* Reduced font size */
   font-weight: 700;
   transition: all 0.3s linear;
   box-shadow: 1px 1px 4px 2px rgba(0, 0, 0, 0.1);
@@ -144,14 +34,15 @@
   box-shadow: 1px 1px 4px 2px rgba(0, 0, 0, 0.4);
 }
 
+/* Todo Container Styles */
 .todoContainer {
   display: flex;
   flex-direction: column;
   height: 80%;
   background-color: rgb(0, 0, 0);
   margin: 8px 4px;
-  border-radius: 8px;
   padding: 12px;
+  border-radius: 8px;
   overflow-y: auto;
 }
 
@@ -165,38 +56,6 @@
   margin-bottom: 8px;
 }
 
-.editContainer {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.editInput {
-  flex: 1;
-  padding: 8px;
-  height: 100%;
-  font-size: inherit;
-}
-
-.editTextarea {
-  flex: 1;
-  padding: 8px;
-  margin-top: 8px;
-  resize: vertical;
-}
-.editTextarea {
-  width: 100%; /* Adjust width as needed */
-  height: 100px; /* Increase height as needed */
-  resize: vertical; /* Allow vertical resizing */
-  /* Add any other styling properties */
-}
-.editTextarea {
-  width: 100%;
-  height: 100px; /* Adjust height as needed */
-  resize: vertical;
-  /* Add any other styling properties */
-}
-
 .infoContainer {
   display: flex;
   align-items: center;
@@ -205,16 +64,46 @@
   font-size: large;
 }
 
-.todoDetails {
+/* Edit Mode Styles */
+.editContainer {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.editInput,
+.editTextarea {
   flex: 1;
+  padding: 8px;
+  font-size: inherit;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-.todoDescription {
-  font-size: medium;
-  color: gray;
-  margin-top: 4px;
+.editTextarea {
+  min-height: 100px;
+  resize: vertical;
 }
 
+/* Buttons Container */
+.buttonsContainer {
+  display: flex;
+  gap: 10px;
+  margin-left: auto; /* Align buttons to the right */
+}
+
+/* Title and Description Styles */
+.title {
+  margin-right: 24px; /* Adjusted margin */
+  font-weight: bold;
+}
+
+.description {
+  margin-left: 12px; /* Adjusted margin */
+  color: #666;
+}
+
+/* No Todo Message */
 .noTodoMessage {
   color: white;
   align-self: center;

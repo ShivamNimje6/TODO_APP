@@ -3,17 +3,19 @@ import Styles from "./TODO.module.css";
 import axios from "axios";
 
 export function TODO(props) {
-  const [newTodo, setNewTodo] = useState(""); // State for new todo input
-  const [todoData, setTodoData] = useState([]); // State to hold todo list
-  const [loading, setLoading] = useState(true); // State to track loading state
-  const [editMode, setEditMode] = useState(null); // State to track edit mode
-  const [editedTodoTitle, setEditedTodoTitle] = useState(""); // State to hold edited todo title
+  const [newTodo, setNewTodo] = useState("");
+  const [newDescription, setNewDescription] = useState(""); // State for new description input
+  const [todoData, setTodoData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [editMode, setEditMode] = useState(null);
+  const [editField, setEditField] = useState(null); // Track which field is being edited
+  const [editedTodoTitle, setEditedTodoTitle] = useState("");
+  const [editedTodoDescription, setEditedTodoDescription] = useState(""); // State to hold edited todo description
 
   useEffect(() => {
     fetchTodo();
   }, []);
 
-  // Fetch todos from API
   const fetchTodo = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/todo");
@@ -24,7 +26,6 @@ export function TODO(props) {
     }
   };
 
-  // Add a new todo
   const addTodo = () => {
     const options = {
       method: "POST",
@@ -34,6 +35,7 @@ export function TODO(props) {
       },
       data: {
         title: newTodo,
+        description: newDescription, // Include description in the new todo
       },
     };
     axios
@@ -42,13 +44,13 @@ export function TODO(props) {
         console.log("New todo added:", response.data);
         setTodoData((prevData) => [...prevData, response.data]);
         setNewTodo("");
+        setNewDescription(""); // Clear description input after adding
       })
       .catch((err) => {
         console.error("Error adding todo:", err);
       });
   };
 
-  // Delete a todo
   const deleteTodo = (id) => {
     const options = {
       method: "DELETE",
@@ -68,7 +70,6 @@ export function TODO(props) {
       });
   };
 
-  // Update todo status (mark as done/undone)
   const updateTodoStatus = (id, done) => {
     const options = {
       method: "PATCH",
@@ -93,13 +94,16 @@ export function TODO(props) {
       });
   };
 
-  // Toggle edit mode for a todo
-  const toggleEditMode = (id, currentTitle) => {
-    setEditMode(id); // Set edit mode for the current todo
-    setEditedTodoTitle(currentTitle); // Set initial value of edited todo title
+  const toggleEditMode = (id, field, currentValue) => {
+    setEditMode(id);
+    setEditField(field);
+    if (field === "title") {
+      setEditedTodoTitle(currentValue);
+    } else if (field === "description") {
+      setEditedTodoDescription(currentValue);
+    }
   };
 
-  // Save edited todo
   const saveEditedTodo = async (id) => {
     try {
       const options = {
@@ -109,7 +113,9 @@ export function TODO(props) {
           accept: "application/json",
         },
         data: {
-          title: editedTodoTitle,
+          title: editField === "title" ? editedTodoTitle : undefined,
+          description:
+            editField === "description" ? editedTodoDescription : undefined,
         },
       };
       const response = await axios.request(options);
@@ -117,7 +123,8 @@ export function TODO(props) {
       setTodoData((prevData) =>
         prevData.map((todo) => (todo._id === id ? response.data : todo))
       );
-      setEditMode(null); // Exit edit mode after saving
+      setEditMode(null);
+      setEditField(null);
     } catch (error) {
       console.error("Error updating todo:", error);
     }
@@ -136,6 +143,17 @@ export function TODO(props) {
             onChange={(event) => {
               setNewTodo(event.target.value);
             }}
+            placeholder="Title"
+          />
+          <input
+            className={Styles.todoInput}
+            type="text"
+            name="New Description"
+            value={newDescription}
+            onChange={(event) => {
+              setNewDescription(event.target.value);
+            }}
+            placeholder="Description"
           />
           <button
             id="addButton"
@@ -153,43 +171,75 @@ export function TODO(props) {
         ) : todoData.length > 0 ? (
           todoData.map((entry) => (
             <div key={entry._id} className={Styles.todo}>
-              {editMode === entry._id ? (
-                // Render input field for editing
+              {editMode === entry._id && editField === "title" ? (
                 <span className={Styles.editContainer}>
                   <input
                     type="text"
-                    className={Styles.editInput} // Add a specific class for styling the input field
+                    className={Styles.editInput}
                     value={editedTodoTitle}
                     onChange={(e) => setEditedTodoTitle(e.target.value)}
+                    placeholder="Title"
+                  />
+                  <button onClick={() => saveEditedTodo(entry._id)}>
+                    Save
+                  </button>
+                </span>
+              ) : editMode === entry._id && editField === "description" ? (
+                <span className={Styles.editContainer}>
+                  <input
+                    type="text"
+                    className={Styles.editInput}
+                    value={editedTodoDescription}
+                    onChange={(e) => setEditedTodoDescription(e.target.value)}
+                    placeholder="Description"
                   />
                   <button onClick={() => saveEditedTodo(entry._id)}>
                     Save
                   </button>
                 </span>
               ) : (
-                // Render todo item
                 <span className={Styles.infoContainer}>
                   <input
                     type="checkbox"
                     checked={entry.done}
                     onChange={() => updateTodoStatus(entry._id, entry.done)}
                   />
-                  {entry.title}
-                  <button
-                    onClick={() => toggleEditMode(entry._id, entry.title)}
-                  >
-                    Edit
-                  </button>
+                  <div>
+                    <span className={Styles.title}>{entry.title}</span>
+                    <span className={Styles.description}>
+                      {entry.description}
+                    </span>
+                  </div>
+                  <div className={Styles.buttonsContainer}>
+                    <button
+                      onClick={() =>
+                        toggleEditMode(entry._id, "title", entry.title)
+                      }
+                    >
+                      Edit Title
+                    </button>
+                    <button
+                      onClick={() =>
+                        toggleEditMode(
+                          entry._id,
+                          "description",
+                          entry.description
+                        )
+                      }
+                    >
+                      Edit Description
+                    </button>
+                    <button
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        deleteTodo(entry._id);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </span>
               )}
-              <span
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  deleteTodo(entry._id);
-                }}
-              >
-                Delete
-              </span>
             </div>
           ))
         ) : (
